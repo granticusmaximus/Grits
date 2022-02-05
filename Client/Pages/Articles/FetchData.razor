@@ -1,0 +1,59 @@
+﻿@page "/articles"
+@inject HttpClient client
+@inject IJSRuntime js
+
+<h3>Articles</h3>
+
+<br>
+
+@if (posts == null)
+{
+    <text>Loading...</text>
+}
+else if (posts.Length == 0)
+{
+    <text>No Records Found.</text>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Date Entered</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Article post in posts)
+            {
+                <tr>
+                    <td>@post.Title</td>
+                    <td>@post.ModifiedDate</td>
+                    <td>
+                        <a class="btn btn-success" href="article/edit/@post.ID">Edit</a>
+                        <button class="btn btn-danger" @onclick="@(() => Delete(post.ID))">Delete</button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+@code {
+    Article[] posts { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        posts = await client.GetFromJsonAsync<Article[]>("api/article");
+    }
+
+    async Task Delete(int postID)
+    {
+        var post = posts.First(x => x.ID == postID);
+        if (await js.InvokeAsync<bool>("confirm", $"Do you want to delete {post.Title}'s ({post.ID}) Record?"))
+        {
+            await client.DeleteAsync($"api/article/{postID}");
+            await OnInitializedAsync();
+        }
+    }
+}

@@ -1,0 +1,48 @@
+﻿<EditForm Model="@post" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label>Title :</label>
+        <div>
+            <InputText @bind-Value="@post.Title" />
+            <ValidationMessage For="@(() => post.Title)" />
+        </div>
+    </div>
+    <div class="form-group ">
+        <div>
+            <label>Date Entered:</label>
+            <div>
+                <InputDate @bind-Value="@post.ModifiedDate" />
+                <ValidationMessage For="@(() => post.ModifiedDate)" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div>
+            <label>Content:</label>
+            <div>
+                <InputTextArea @bind-Value="@post.Content" />
+                <ValidationMessage For="@(() => post.Content)" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div>
+            <label>Main Header Image:</label>
+            <div>
+                <InputFile @bind-Value="@post.HeaderImage" />
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">
+        @ButtonText
+    </button>
+
+</EditForm>
+
+
+@code {
+    [Parameter] public Article post { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+}

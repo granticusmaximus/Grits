@@ -1,0 +1,17 @@
+﻿@page "/article/create"
+@inject HttpClient http
+@inject NavigationManager uriHelper
+
+<h3>Create</h3>
+
+<Form ButtonText="Create Article" article="@article"
+      OnValidSubmit="@CreateArticle" />
+
+@code {
+    Article article = new Article();
+    async Task CreateArticle()
+    {
+        await http.PostAsJsonAsync("api/article", article);
+        uriHelper.NavigateTo("developer");
+    }
+}
